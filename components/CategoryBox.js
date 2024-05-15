@@ -15,9 +15,9 @@ class Button extends Component {
           style={{
             width: 53,
             height: 53,
-            backgroundColor: '#ce8040',
+            backgroundColor: 'lightgray',
             marginBottom: 5,
-            borderRadius: 50,
+            borderRadius: 5,
           }}
         />
         <Text
