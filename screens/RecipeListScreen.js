@@ -31,7 +31,6 @@ function RecipeListScreen({route}) {
       console.error('FetchError:', error);
     }
   };
-
   useEffect(() => {
     search_recipe(keyword);
   }, [keyword]);
@@ -46,11 +45,10 @@ function RecipeListScreen({route}) {
         ) : null}
       </View>
       <View style={styles.contents}>
-        {/*{recipes.length === 0 ? <Empty /> : <RecipeList recipes={recipes} />}*/}
         {isLoading ? (
           <Text style={styles.loading}>로딩 중...</Text>
         ) : (
-          <Text>{recipes}</Text>
+          <RecipeList recipes={recipes} />
         )}
       </View>
     </View>

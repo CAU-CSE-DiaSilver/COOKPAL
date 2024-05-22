@@ -3,14 +3,14 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-function RecipeItem({id, title, thumbnail_link}) {
+function RecipeItem({recipe_link, title, thumbnail_link}) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={() => {
         navigation.navigate('Helper', {
-          recipeid: {id},
+          recipe_link: {recipe_link},
           thumbnail: thumbnail_link,
           title: {title},
         });
@@ -19,7 +19,6 @@ function RecipeItem({id, title, thumbnail_link}) {
         <Image style={styles.imageStyle} source={{uri: thumbnail_link}} />
         <View style={styles.info}>
           <Text style={styles.title}>{title}</Text>
-          <Text>여기에 상세 설명</Text>
         </View>
       </View>
     </TouchableOpacity>

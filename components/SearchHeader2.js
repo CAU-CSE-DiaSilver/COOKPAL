@@ -22,7 +22,7 @@ function SearchHeader2() {
       <Pressable
         style={({pressed}) => [styles.back, pressed && {opacity: 0.5}]}
         onPress={() => navigation.pop()}>
-        <Icon name="navigate-before" size={25} color="#020c2e" />
+        <Icon name="navigate-before" size={30} color="#020c2e" />
       </Pressable>
       <TextInput
         style={styles.input}
@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   button: {
-    marginLeft: 18,
-    marginRight: 18,
+    marginLeft: 15,
+    marginRight: 15,
   },
   button2: {
     marginRight: 10,

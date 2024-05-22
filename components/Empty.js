@@ -4,7 +4,7 @@ import {View, Text, StyleSheet} from 'react-native';
 function Empty() {
   return (
     <View>
-      <Text>또잉 결과가 없어용!</Text>
+      <Text>검색 결과가 없어요! 다른 검색어로 검색해주세요.</Text>
     </View>
   );
 }

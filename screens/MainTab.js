@@ -26,10 +26,10 @@ function MainTab({navigation}) {
       <Tab.Navigator
         initialRouteName="홈"
         screenOptions={{
-          tabBarActiveTintColor: '#fbf9ef',
-          tabBarInactiveTintColor: '#ce8040',
+          tabBarActiveTintColor: '#d2713f',
+          tabBarInactiveTintColor: '#b5b5b5',
           tabBarStyle: {
-            backgroundColor: '#020c2e',
+            backgroundColor: 'white',
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             height: 70,
@@ -82,9 +82,6 @@ function MainTab({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  serach: {
-    color: '#ce8040',
-    backgroundColor: '#fbf9ef',
-  },
+  serach: {},
 });
 export default MainTab;

@@ -9,12 +9,12 @@ function RecipeList({recipes}) {
       data={recipes}
       renderItem={({item}) => (
         <RecipeItem
-          id={item.id}
+          recipe_link={item.recipe_link}
           title={item.title}
           thumbnail_link={item.thumbnail_link}
         />
       )}
-      keyExtractor={item => item.id.toString()}
+      keyExtractor={(item, index) => index.toString()}
     />
   );
 }

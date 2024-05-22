@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainTab from './MainTab';
 import Helper from './Helper';
+import HFRecipeScreen from './HFRecipsScreen';
 import RecipeListScreen from './RecipeListScreen';
 import SearchHeader2 from '../components/SearchHeader2';
 import HelperHeader from '../components/HelperHeader';
@@ -32,6 +33,11 @@ function RootStack() {
           headerStyle: {backgroundColor: 'white'},
           headerTitle: () => <SearchHeader2 />,
         }}
+      />
+      <Stack.Screen
+        name="HFRecipe"
+        component={HFRecipeScreen}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );

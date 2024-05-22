@@ -55,10 +55,12 @@ function CategoryBox() {
 const styles = StyleSheet.create({
   main: {},
   title: {
+    padding: 8,
+    borderRadius: 10,
     marginBottom: 10,
-    marginLeft: 5,
-    fontSize: 20,
-    color: '#020c2e',
+    marginLeft: 10,
+    fontSize: 26,
+    color: 'black',
     fontFamily: 'BlackHanSans-Regular',
   },
   item: {
