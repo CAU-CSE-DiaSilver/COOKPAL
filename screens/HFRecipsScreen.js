@@ -4,11 +4,11 @@ import HFScreenHeader from '../components/HFScreenHeader';
 import RecipeContext from '../contexts/RecipeContext';
 function HFRecipeScreen() {
   const recipe = useContext(RecipeContext);
-  const [filteredData ,setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     setFilteredData(recipe.slice(1));
-  }, []);
+  }, [recipe]);
 
   return (
     <View style={styles.block}>
