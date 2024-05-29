@@ -1,8 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
 import HelperHeader from '../components/HelperHeader';
 import FloatingHelperBtn from '../components/FloatingHelperBtn';
 import RecipeContext from '../contexts/RecipeContext';
+
+const {width, height} = Dimensions.get('window');
 
 function Helper({route}) {
   const {recipe_link} = route.params.recipe_link;
@@ -92,8 +94,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     zIndex: -1,
-    width: '100%',
-    height: '100%',
+    width: width,
+    height: height / 2,
     resizeMode: 'stretch',
   },
   ing: {
