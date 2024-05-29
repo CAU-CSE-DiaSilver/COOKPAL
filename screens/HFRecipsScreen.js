@@ -4,8 +4,8 @@ import HFScreenHeader from '../components/HFScreenHeader';
 import RecipeContext from '../contexts/RecipeContext';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
-function HFRecipeScreen() {
-  const {recipe} = useContext(RecipeContext);
+function HFRecipeScreen({route}) {
+  const {recipe} = route.params.recipe;
   const stepContent = recipe.recipe_text;
   const [stepState, setStepState] = useState(0);
   const handleNext = () => {
