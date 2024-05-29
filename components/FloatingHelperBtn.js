@@ -2,10 +2,10 @@ import React from 'react';
 import {Pressable, StyleSheet, View, Image, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-function FloatingHelperBtn({recipe}) {
+function FloatingHelperBtn() {
   const navigation = useNavigation();
   const onPress = () => {
-    navigation.navigate('HFRecipe', {recipe: {recipe}});
+    navigation.navigate('HFRecipe');
   };
   return (
     <View style={styles.wrapper}>

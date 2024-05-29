@@ -1,12 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import HFScreenHeader from '../components/HFScreenHeader';
 import RecipeContext from '../contexts/RecipeContext';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
-function HFRecipeScreen({recipe}) {
-  //const recipe = useContext(RecipeContext);
-  const stepContent = ['text1', 'text2'];
+function HFRecipeScreen() {
+  const {recipe} = useContext(RecipeContext);
+  const stepContent = recipe.recipe_text;
   const [stepState, setStepState] = useState(0);
   const handleNext = () => {
     // recipe.length-1 이후는 없기 때문에 return
@@ -21,7 +21,7 @@ function HFRecipeScreen({recipe}) {
     <View style={styles.block}>
       <HFScreenHeader />
       <GestureRecognizer onSwipeLeft={handleNext} onSwipeRight={handleBack}>
-        <Text>{JSON.stringify(recipe)}</Text>
+        <Text>{stepContent[stepState]}</Text>
       </GestureRecognizer>
     </View>
   );
