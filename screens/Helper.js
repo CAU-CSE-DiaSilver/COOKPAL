@@ -11,7 +11,8 @@ function Helper({route}) {
   const server_addr =
     'http://port-0-cookpal-server-rccln2llvzrcxr2.sel5.cloudtype.app/';
   //레시피 링크 전달
-  const [recipe, onChangeRecipe] = useContext(RecipeContext);
+  //const [recipe, onChangeRecipe] = useContext(RecipeContext);
+  const [recipe, setRecipe] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const get_recipe = async recipe_link => {
     try {
@@ -25,7 +26,7 @@ function Helper({route}) {
       });
       //레시피를 받아온다.(레시피를 출력하는 것으로만 구현. 네비게이션 쪽 구현 되면 이 부분도 이런 식으로 구현 할 예정)
       const json = await response.json();
-      onChangeRecipe(json);
+      setRecipe(json);
       setLoading(false);
     } catch (error) {
       console.error('Recipe_link_Error :', error);
@@ -43,14 +44,8 @@ function Helper({route}) {
       <View style={styles.blockbottom}>
         <Text style={styles.name}>{title}</Text>
       </View>
-      {isLoading ? (
-        <Text>로딩로딩</Text>
-      ) : (
-        <>
-          <Text>{JSON.stringify(recipe)}</Text>
-          <FloatingHelperBtn />
-        </>
-      )}
+      <Text style={styles.ing}>{JSON.stringify(recipe)}</Text>
+      <FloatingHelperBtn recipe={recipe} />
     </>
   );
 }
@@ -81,6 +76,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'stretch',
+  },
+  ing: {
+    flex: 1,
   },
 });
 

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingLeft: 10,
-    width: '63%',
+    width: '55%',
     height: 44,
     color: '#020c2e',
     borderRadius: 20,
@@ -69,11 +69,12 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   button: {
-    marginLeft: 15,
-    marginRight: 15,
+    position: 'absolute',
+    right: 80,
   },
   button2: {
-    marginRight: 10,
+    position: 'absolute',
+    right: 35,
   },
 });
 
