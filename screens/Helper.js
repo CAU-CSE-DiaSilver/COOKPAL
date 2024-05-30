@@ -43,26 +43,21 @@ function Helper({route}) {
         <HelperHeader />
         <Image style={styles.imageStyle} source={{uri: ImageSrc}} />
       </View>
-      {isLoading ? (
-        <>
-          <View style={styles.blockbottom}>
-            <Text style={styles.name}>{title}</Text>
-            <Text style={styles.title}>재료</Text>
-            <Text>{JSON.stringify(recipe.ingredients)}</Text>
-            <Text style={styles.title}>레시피</Text>
-            <Text>{JSON.stringify(recipe.recipe_text)}</Text>
-          </View>
-          <FloatingHelperBtn recipe={recipe} />
-        </>
-      ) : (
-        <Text>로딩 중...</Text>
-      )}
+      <View style={styles.blockbottom}>
+        <Text style={styles.name}>{title}</Text>
+        <Text style={styles.title}>재료</Text>
+        <Text>{JSON.stringify(recipe.ingredients)}</Text>
+        <Text style={styles.title}>레시피</Text>
+        <Text>{JSON.stringify(recipe.recipe_text)}</Text>
+      </View>
+      <FloatingHelperBtn recipe={recipe} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   block: {
+    flex: 1,
     backgroundColor: 'white',
   },
   blocktop: {
@@ -94,8 +89,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     zIndex: -1,
-    width: width,
-    height: height / 2,
+    width: '100%',
+    height: '100%',
     resizeMode: 'stretch',
   },
   ing: {

@@ -82,6 +82,6 @@ function MainTab({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  serach: {},
+  block: {},
 });
 export default MainTab;
