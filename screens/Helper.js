@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
 import HelperHeader from '../components/HelperHeader';
 import FloatingHelperBtn from '../components/FloatingHelperBtn';
 import RecipeContext from '../contexts/RecipeContext';
+import requestCameraAndMicrophonePermissions from './HandFree/permission'
 
 const {width, height} = Dimensions.get('window');
 
@@ -35,8 +36,9 @@ function Helper({route}) {
     }
   };
   useEffect(() => {
+    requestCameraAndMicrophonePermissions();
     get_recipe(recipe_link);
-  });
+  },[]);
   return (
     <View style={styles.block}>
       <View style={styles.blocktop}>
