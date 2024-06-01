@@ -103,7 +103,10 @@ export class HandControl{
       let isFive = await new Promise((resolve) => {SaveModule.getFive(state=>resolve(state))});
       let isThree = await new Promise((resolve) => {SaveModule.getThree(state=>resolve(state))});
       let backOrFront = await new Promise((resolve) => {SaveModule.getBackOrFront(state=>resolve(state))});
-
+      
+      if(this.direction != backOrFront){
+        this.sequence = 0;
+      }
       if (this.sequence == 0) {//처음 victory 인식
         if (isVictory||isFive||isThree) {
           this.sequence++;
@@ -111,27 +114,17 @@ export class HandControl{
           if(isVictory) this.flag = 1
           if(isThree) this.flag = 2
           if(isFive) this.flag = 3
-          console.log("-------"+this.flag)
         }
       }else if (this.sequence == 1) {//이전에 victory/tree/five가 인식 된적 있음
-        if (backOrFront == this.direction) {//victory 일때와 동일한 방향의 손
-            if (isFist) {
-              this.sequence++;
-            }else if((isVictory == 1 && this.flag!=1)||(isThree == 1 && this.flag != 2)||(isFive == 1 && this.flag != 3)){
-              console.log("test"+this.flag+"//////"+isThree)
-              this.sequence = 0;
-            }
-        }else {//손 모양은 주먹이지만 손 방향이 반대
+        if (isFist) {
+          this.sequence++;
+        }else if((isVictory == 1 && this.flag!=1)||(isThree == 1 && this.flag != 2)||(isFive == 1 && this.flag != 3)){
           this.sequence = 0;
         }
       }else {//victory/tree/five -> 주먹 -> ?
         if((isVictory == 1 && this.flag==1)||(isThree == 1 && this.flag == 2)||(isFive == 1 && this.flag == 3)){
           this.sequence = 0
-          if(backOrFront == this.direction){
-            this.fin = 1
-          }
-        }else if(!isFist){
-          this.sequence = 0
+          this.fin = 1
         }
       }
     }

@@ -1,14 +1,15 @@
 import React, {useContext, useState, useEffect, useRef} from 'react';
-import {PixelRatio, StyleSheet, View, Text, Image, UIManager, findNodeHandle} from 'react-native';
+import {PixelRatio, StyleSheet, View, Text, Image, UIManager, findNodeHandle, Modal, Pressable, FlatList} from 'react-native';
 import HFScreenHeader from '../components/HFScreenHeader';
 import RecipeContext from '../contexts/RecipeContext';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { useNavigation } from '@react-navigation/native';
+import Tts from 'react-native-tts';
 
-import {CameraViewManager} from './HandFree/CameraManager';
-import {HandControl} from'./HandFree/HandControl';
-import {VoiceControl} from'./HandFree/VoiceControl';
-import {VoiceCommend} from'./HandFree/VoiceCommend';
+import {CameraViewManager} from './HandFree/CameraManager';//카메라 + 손 인식
+import {HandControl} from'./HandFree/HandControl';//핸드 제스쳐 인식
+import {VoiceControl} from'./HandFree/VoiceControl';//쿡펠 호출
+import {VoiceCommend} from'./HandFree/VoiceCommend';//명령
 
 //카메라 생성
 const createFragment = viewId =>
@@ -30,18 +31,21 @@ function HFRecipeScreen({route}) {
   const {recipe} = route.params;
   const stepContent = recipe.recipe_text;
   const stepImage = recipe.recipe_list;
+  const ingredients = recipe.ingredients;
   const [stepState, setStepState] = useState(0);
 
   const ref = useRef(null);
   const handCon = new HandControl();
   const voiceCom = new VoiceCommend()
   const navigation = useNavigation();
-  let [isCall, callCookPal] = useState(false);
-  let [commend, getCommend] = useState("");
+  const [isCall, callCookPal] = useState(false);
+  const [commend, getCommend] = useState("");
+  const [ingredientView, setingredientView] = useState(false);
 
   //핸드 프리 기능을 위한 초기 설정
   useEffect(() => {
     const voiceCon = new VoiceControl(callCookPal);
+    // 쿡펠 호출 + 음성 명령 설정
     async function createVoice(){
       try{
         await voiceCon._makeManager()
@@ -60,10 +64,13 @@ function HFRecipeScreen({route}) {
     createVoice();
     createCommend();
 
-    const viewId = findNodeHandle(ref.current);
+    //tts 설정
+    Tts.setDefaultLanguage('ko-KR');
+    Tts.setDefaultRate(0.9);
 
+    // 손 인식 + 카메라 설정
+    const viewId = findNodeHandle(ref.current);
     createFragment(viewId);
-    
     //View가 사라지기 전에 동작(카메라 리소스 해제)
     const beforeRemoveListener = navigation.addListener('beforeRemove', (e) => {
       removeFragment(viewId);
@@ -84,6 +91,14 @@ function HFRecipeScreen({route}) {
     setStepState(prev => --prev);
   };
 
+  const exitIngredient = () => {
+    setingredientView(false)
+  }
+
+  const renderItem = ({ item }) => (
+    <Text style={styles.modalTextStyle}>{item}</Text>
+  );
+
   // 핸드 컨트롤 인식
   useEffect(() => {
     let isMounted = true; // 컴포넌트 마운트 여부 확인
@@ -94,19 +109,42 @@ function HFRecipeScreen({route}) {
       try {
         await handCon.calculate_hand_move();
         if (handCon.fin == 1) {
-            if(handCon.direction===1&&stepContent.length - 1!==page_num) {
-              setStepState(prev => ++prev)
-              page_num++
-            }else if(handCon.direction===-1&&page_num!==0){
-              setStepState(prev => --prev)
-              page_num--
-            }
-          console.log(handCon.flag)
+          switch(handCon.flag){
+            case 1 : // 페이지 넘어감(주먹 -> V -> 주먹)
+              setStepState(prev=>{
+                let page_num = prev
+                console.log(page_num+"//"+stepContent.length)
+                console.log((handCon.direction===1&&stepContent.length - 1!==page_num))
+                if(handCon.direction===1&&stepContent.length - 1!==page_num){
+                  return prev+1
+                } else if(handCon.direction===-1&&page_num!==0){
+                  return prev-1
+                }
+                return page_num
+              })
+              break;
+            case 2 : //음성(세손가락 -> 주먹 -> 세손가락)
+              console.log("speak")
+              setStepState(prev=>{
+                Tts.stop()
+                Tts.speak(stepContent[prev])
+                return prev
+              })
+              break;
+            case 3 : //음식 재료(5 -> 주먹 -> 5)
+              console.log("testest"+handCon.direction)
+              if(handCon.direction==1){
+                setingredientView(true)
+              }else{
+                setingredientView(false)
+              }
+              break;
+          }  
           handCon.fin = 0;
           count = 0
         }
         count++
-        if(count>20){ //2초 동안 다음 움직임이 없으면 초기화
+        if(count>100){ //2초 동안 다음 움직임이 없으면 초기화
           handCon.sequence = 0;
           count = 0
         }
@@ -115,8 +153,8 @@ function HFRecipeScreen({route}) {
       }
 
       if (isMounted) {
-        // 0.1초 후에 다시 수행
-        setTimeout(performHandMove, 100);
+        // 0.05초 후에 다시 수행
+        setTimeout(performHandMove, 50);
       }
     };
     performHandMove();
@@ -173,6 +211,23 @@ function HFRecipeScreen({route}) {
         </View>
         </GestureRecognizer>
         
+        <View style={{ marginTop: 400 }}>
+          <Modal
+              animationType="slide"
+              visible={ingredientView}
+              transparent={true}
+          >
+              <View style={styles.modalView}>
+                  <View>
+                      <FlatList data = {ingredients} renderItem={renderItem}/>
+                  </View>
+                  <Pressable
+                      onPress={exitIngredient}>
+                      <Text>close</Text>
+                  </Pressable>
+              </View>
+          </Modal>
+      </View>
     </View>
   );
 }
@@ -185,6 +240,52 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   imageStyle: {},
+  container: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: "#17191c"
+  },
+
+  /**
+   * 일반 화면 영역
+   */
+  textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 50
+  },
+  viewContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 400,
+  },
+
+  /**
+   * 모달 화면 영역
+   */
+  modalView: {
+      marginTop: '50%',
+      height: '50%',
+      margin: 30,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+          width: 0,
+          height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+  },
+  modalTextStyle: {
+      color: '#17191c',
+      fontWeight: 'bold',
+      textAlign: 'center'
+  },
 });
 
 export default HFRecipeScreen;
