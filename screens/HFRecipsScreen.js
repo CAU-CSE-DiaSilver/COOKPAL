@@ -6,7 +6,7 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 import { useNavigation } from '@react-navigation/native';
 import Tts from 'react-native-tts';
 
-import {CameraViewManager} from './HandFree/CameraManager';//카메라 + 손 인식
+//import {CameraViewManager} from './HandFree/CameraManager';//카메라 + 손 인식
 import {HandControl} from'./HandFree/HandControl';//핸드 제스쳐 인식
 import {VoiceControl} from'./HandFree/VoiceControl';//쿡펠 호출
 import {VoiceCommend} from'./HandFree/VoiceCommend';//명령
@@ -70,10 +70,10 @@ function HFRecipeScreen({route}) {
 
     // 손 인식 + 카메라 설정
     const viewId = findNodeHandle(ref.current);
-    createFragment(viewId);
+    //createFragment(viewId);
     //View가 사라지기 전에 동작(카메라 리소스 해제)
     const beforeRemoveListener = navigation.addListener('beforeRemove', (e) => {
-      removeFragment(viewId);
+      //removeFragment(viewId);
     });
     return() => {
       beforeRemoveListener();
@@ -201,13 +201,15 @@ function HFRecipeScreen({route}) {
               flex: 1,
               backgroundColor: 'black',
             }}>
+
+          {/** 
           <CameraViewManager
                 style={{
                   height: PixelRatio.getPixelSizeForLayoutSize(100),
                   width: PixelRatio.getPixelSizeForLayoutSize(100),
                 }}
                 ref={ref}
-              />  
+              />*/}  
         </View>
         </GestureRecognizer>
         
