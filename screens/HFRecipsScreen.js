@@ -146,7 +146,7 @@ function HFRecipeScreen({route}) {
 
       if (isMounted) {
         // 0.05초 후에 다시 수행
-        setTimeout(performHandMove, 150);
+        setTimeout(performHandMove, 100);
       }
     };
     performHandMove();

@@ -133,7 +133,7 @@ export class HandControl{
           this.fin = 1
         }
       }
-      if(this.count>20==0){
+      if(this.count>30){
         this.sequence = 0
         this.count = 0
       }
