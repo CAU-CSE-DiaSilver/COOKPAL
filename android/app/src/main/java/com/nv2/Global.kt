@@ -4,7 +4,7 @@ object Global{
     var isFist: Int = 0
     var isVictory: Int = 0
     var isFive : Int = 0
-    var isThree : Int = 0
+    var isFour : Int = 0
     var backOrFront : Int = 0 //back이면 -1, front면 1
 
     var test1: Double = 0.0

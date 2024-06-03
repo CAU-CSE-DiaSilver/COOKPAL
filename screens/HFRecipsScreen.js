@@ -6,7 +6,7 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 import { useNavigation } from '@react-navigation/native';
 import Tts from 'react-native-tts';
 
-//import {CameraViewManager} from './HandFree/CameraManager';//카메라 + 손 인식
+import {CameraViewManager} from './HandFree/CameraManager';//카메라 + 손 인식
 import {HandControl} from'./HandFree/HandControl';//핸드 제스쳐 인식
 import {VoiceControl} from'./HandFree/VoiceControl';//쿡펠 호출
 import {VoiceCommend} from'./HandFree/VoiceCommend';//명령
@@ -66,19 +66,21 @@ function HFRecipeScreen({route}) {
 
     //tts 설정
     Tts.setDefaultLanguage('ko-KR');
-    Tts.setDefaultRate(0.9);
+    Tts.setDefaultRate(0.9, true);
 
     // 손 인식 + 카메라 설정
     const viewId = findNodeHandle(ref.current);
-    //createFragment(viewId);
+    createFragment(viewId);
     //View가 사라지기 전에 동작(카메라 리소스 해제)
     const beforeRemoveListener = navigation.addListener('beforeRemove', (e) => {
-      //removeFragment(viewId);
+      removeFragment(viewId);
     });
     return() => {
       beforeRemoveListener();
       voiceCom.componentWillUnmount();
-      voiceCon.componentWillUnmount();}
+      voiceCon.componentWillUnmount();
+      Tts.stop()
+    }
   }, []);
 
   const handleNext = () => {
@@ -102,8 +104,6 @@ function HFRecipeScreen({route}) {
   // 핸드 컨트롤 인식
   useEffect(() => {
     let isMounted = true; // 컴포넌트 마운트 여부 확인
-    let count = 0;
-    let page_num = 0;
     const performHandMove = async () => {
       if (!isMounted) return; // 컴포넌트가 마운트된 경우에만 수행
       try {
@@ -113,8 +113,6 @@ function HFRecipeScreen({route}) {
             case 1 : // 페이지 넘어감(주먹 -> V -> 주먹)
               setStepState(prev=>{
                 let page_num = prev
-                console.log(page_num+"//"+stepContent.length)
-                console.log((handCon.direction===1&&stepContent.length - 1!==page_num))
                 if(handCon.direction===1&&stepContent.length - 1!==page_num){
                   return prev+1
                 } else if(handCon.direction===-1&&page_num!==0){
@@ -123,30 +121,24 @@ function HFRecipeScreen({route}) {
                 return page_num
               })
               break;
-            case 2 : //음성(세손가락 -> 주먹 -> 세손가락)
-              console.log("speak")
-              setStepState(prev=>{
-                Tts.stop()
-                Tts.speak(stepContent[prev])
-                return prev
-              })
-              break;
-            case 3 : //음식 재료(5 -> 주먹 -> 5)
-              console.log("testest"+handCon.direction)
+            case 2 : //음성(네손가락 -> 주먹 -> 네손가락)
               if(handCon.direction==1){
                 setingredientView(true)
               }else{
                 setingredientView(false)
               }
               break;
+            case 3 : //음식 재료(5 -> 주먹 -> 5)
+              if(handCon.direction==1){
+                setStepState(prev=>{
+                  let page_num = prev
+                  Tts.stop()
+                  Tts.speak(stepContent[page_num])
+                  return page_num
+                })}
+              break;
           }  
           handCon.fin = 0;
-          count = 0
-        }
-        count++
-        if(count>100){ //2초 동안 다음 움직임이 없으면 초기화
-          handCon.sequence = 0;
-          count = 0
         }
       } catch (error) {
         console.error(error);
@@ -154,7 +146,7 @@ function HFRecipeScreen({route}) {
 
       if (isMounted) {
         // 0.05초 후에 다시 수행
-        setTimeout(performHandMove, 50);
+        setTimeout(performHandMove, 150);
       }
     };
     performHandMove();
@@ -167,7 +159,9 @@ function HFRecipeScreen({route}) {
   useEffect(() => {
     // isCall이 true라면 isCall false로
     // 일정 시간이 지나도 안불리면 자동으로 종료되기 위함
-    if (isCall) {
+    if (isCall) {//쿡펠이 불림
+      Tts.stop()
+      Tts.speak("네")
       voiceCom._startProcessing(getCommend)
       //여기에 보이스 커멘드로 조정
       const timerId = setTimeout(() => {
@@ -177,6 +171,45 @@ function HFRecipeScreen({route}) {
       return () => clearTimeout(timerId);
     }
   }, [isCall]);
+
+  useEffect(() => {
+    if(commend!=""){
+      switch(commend){
+        case "next" :
+          setStepState(prev=>{
+            let page_num = prev
+            if(stepContent.length - 1!==page_num){
+              return prev+1
+            }
+            return page_num
+          })
+          break;
+        case "back" :
+          setStepState(prev=>{
+            let page_num = prev
+            if(page_num!==0){
+              return prev-1
+            }
+            return page_num
+          })
+          break;
+        case "speak" :
+            setStepState(prev=>{
+              let page_num = prev
+              Tts.stop()
+              Tts.speak(stepContent[page_num])
+              return page_num
+            })
+          break;
+        case "list" :
+          setingredientView(true)
+          break;
+        case "cancel" :
+          setingredientView(false)
+          break;
+      }
+    }
+  }, [commend])
 
   return (
     <View style={styles.block}>
@@ -202,14 +235,13 @@ function HFRecipeScreen({route}) {
               backgroundColor: 'black',
             }}>
 
-          {/** 
           <CameraViewManager
                 style={{
                   height: PixelRatio.getPixelSizeForLayoutSize(100),
                   width: PixelRatio.getPixelSizeForLayoutSize(100),
                 }}
                 ref={ref}
-              />*/}  
+              />
         </View>
         </GestureRecognizer>
         

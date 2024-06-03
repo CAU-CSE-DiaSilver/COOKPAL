@@ -23,8 +23,8 @@ class SaveModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaMo
     }
 
     @ReactMethod
-    fun getThree(callback:Callback){
-        callback.invoke(Global.isThree)
+    fun getFour(callback:Callback){
+        callback.invoke(Global.isFour)
     }
 
     @ReactMethod

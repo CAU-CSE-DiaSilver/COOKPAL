@@ -81,10 +81,10 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             var isFist = 1
             var isVictory = 1
             var isFive = 1
-            var isThree = 1
+            var isFour = 1
             
             val threshold = 0.8f
-            val thumbthreshold = 0.7f
+            val thumbthreshold = 0.5f
             var cos: Double = 0.0
 
             var a = DoubleArray(3)
@@ -139,21 +139,23 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
                             isFist = 0
                             if (i>=2) {//약지, 새끼를 핌
                                 isVictory = 0
-                                isThree = 0
                             } 
                         }else if(i<2){
                             // 집게 혹은 중지를 접음
                             isVictory = 0
-                            isThree = 0
+                            isFour = 0
                             isFive = 0
-                        }else{isFive = 0}
+                        }else{
+                            isFive = 0
+                            isFour = 0
+                        }
                     }
                     //엄지를 접음
                     if(i==4){
                         if(!(cos < 0 && kotlin.math.abs(cos)>= thumbthreshold)){
-                            isThree = 0
                             isFive = 0
                         }else{//엄지를 핌
+                            isFour = 0
                             isVictory = 0
                         }
                     }
@@ -163,7 +165,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
                 Global.isFist = isFist
                 Global.isVictory = isVictory
                 Global.isFive = isFive
-                Global.isThree = isThree
+                Global.isFour = isFour
                 
             }
         }
