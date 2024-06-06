@@ -219,10 +219,11 @@ function HFRecipeScreen({route}) {
             backgroundColor: 'white',
             padding: 10,
       }}>
+      {stepImage[stepState]['image'] != "" ?
       <Image
         style={styles.imageStyle}
         source={{uri: stepImage[stepState]['image']}}
-      />
+      />:null}
       <Text
       style={{
         flex: 1,
