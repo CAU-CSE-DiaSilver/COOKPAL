@@ -45,51 +45,6 @@ export class HandControl{
             //console.log("BackOrFront : "+ state);
           });
     }
-    
-    //손 시퀀스 인식
-    // victory -> fist -> victory
-    /*
-    calculate_hand_move(){
-      if (this.sequence == 0) {//처음 victory 인식
-        SaveModule.getVictory(state => {
-          if (state) {
-            this.sequence++;
-            SaveModule.getBackOrFront(state => {
-                this.direction = state;
-            });
-          }
-        });
-      }else if (this.sequence == 1) {//이전에 victory가 인식 된적 있음
-        SaveModule.getFist(state => {//손 모양이 fist
-          if (state) {
-            SaveModule.getBackOrFront(state => {
-              if (state == this.direction) {//victory 일때와 동일한 방향의 손
-                this.sequence++;
-              } else {//손 모양은 주먹이지만 손 방향이 반대
-                this.sequence = 0;
-                this.count = 0;
-              }
-            });
-          }
-        });
-      }else {
-        SaveModule.getVictory(state => {//주먹 이후 victory
-          if (state) {
-            SaveModule.getBackOrFront(state => {
-              if (this.direction == state) {//손 방향 동일
-                if (this.direction == 1) {
-                    this.page_num = 1;
-                } else {
-                    this.page_num = -1;
-                }
-              }
-              this.sequence = 0;
-              this.fin = 1;
-            });
-          }
-        });
-      }
-    }*/
 
     async getState(moduleMethod) {
       return new Promise((resolve) => {
@@ -97,7 +52,6 @@ export class HandControl{
       });
     }
     
-
     async calculate_hand_move(){
       let isVictory = await new Promise((resolve) => {SaveModule.getVictory(state=>resolve(state))});
       let isFist = await new Promise((resolve) => {SaveModule.getFist(state=>resolve(state))});
@@ -123,17 +77,19 @@ export class HandControl{
         if (isFist) {
           this.count = 0
           this.sequence++;
-        }else if((isVictory == 1 && this.flag!=1)||(isFour == 1 && this.flag != 2)||(isFive == 1 && this.flag != 3)){
+        }else if((isVictory == 1 && this.flag!=1)||(isFour == 1 && this.flag != 2) || (isFive == 1 && this.flag != 3)){
+          this.sequence = 0;  
+        }else if(this.flag == 3 && isFour == 1&& this.count>3){
           this.sequence = 0;
         }
       }else {//victory/tree/five -> 주먹 -> ?
-        if((isVictory == 1 && this.flag==1)||(isFour == 1 && this.flag == 2)||(isFive == 1 && this.flag == 3)){
+        if((this.flag==1 && isVictory == 1)||(this.flag == 2 && isFour == 1)||(isFive == 1 && this.flag == 3)){
           this.count = 0
           this.sequence = 0
           this.fin = 1
         }
-      }
-      if(this.count>30){
+      }//5초동안 다음 동작이 수행되지 않으면 초기화
+      if(this.count>50){
         this.sequence = 0
         this.count = 0
       }

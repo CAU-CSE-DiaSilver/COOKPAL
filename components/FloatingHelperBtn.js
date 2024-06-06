@@ -13,7 +13,12 @@ function FloatingHelperBtn({recipe}) {
         style={({pressed}) => [styles.button, {opacity: pressed ? 0.6 : 1}]}
         onPress={onPress}
         android_ripple={{color: 'white'}}
-      />
+      >
+        <Image
+          source={require("../android/app/src/main/assets/images/helper_btn.png")}
+          style={styles.image}
+        />
+      </Pressable>
     </View>
   );
 }
@@ -42,6 +47,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  image:{
+    alignSelf: 'center',
+    width: 58,
+    height: 58,
+  }
 });
 
 export default FloatingHelperBtn;

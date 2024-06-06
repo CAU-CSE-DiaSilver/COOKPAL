@@ -2,8 +2,8 @@
 import { PorcupineManager, PorcupineErrors, Porcupine, } from '@picovoice/porcupine-react-native';
 
 //보이스 처리를 위한 상수
-const _accessKey = "l4JNPFdU9yDOKlWFf4ZzOjmFkDAe5XBiEpuiRNJECtyXaA7kV4mTgQ=="; 
-const keywordPath = "VoiceModel/쿡펠_ko_android_v3_0_0.ppn";
+const _accessKey = "DA65/MZtTShRD/Xeg1urVJu5qw0w3OyboQtYyAxz01UWjXRrw/P7sw=="; 
+const keywordPath = ["VoiceModel/쿡펠_ko_android_v3_0_0.ppn", "VoiceModel/쿡팰_ko_android_v3_0_0.ppn"];
 const modelPath = "VoiceModel/porcupine_params_ko.pv";
 
 let isListening = false;
@@ -50,7 +50,7 @@ export class VoiceControl{
     try {
       this._porcupineManager = await PorcupineManager.fromKeywordPaths (
         _accessKey,
-        [keywordPath],
+        keywordPath,
         detectionCallback,
         processErrorCallback,
         modelPath

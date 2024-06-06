@@ -1,11 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
+import {ScrollView, StyleSheet, View, Text, Image} from 'react-native';
 import HelperHeader from '../components/HelperHeader';
 import FloatingHelperBtn from '../components/FloatingHelperBtn';
 import RecipeContext from '../contexts/RecipeContext';
 import requestCameraAndMicrophonePermissions from './HandFree/permission'
 
-const {width, height} = Dimensions.get('window');
 
 function Helper({route}) {
   const {recipe_link} = route.params.recipe_link;
@@ -47,12 +46,16 @@ function Helper({route}) {
       </View>
       <View style={styles.blockbottom}>
         <Text style={styles.name}>{title}</Text>
-        <Text style={styles.title}>재료</Text>
-        <Text>{JSON.stringify(recipe.ingredients)}</Text>
-        <Text style={styles.title}>레시피</Text>
-        <Text>{JSON.stringify(recipe.recipe_text)}</Text>
+        {!isLoading ? (
+        <ScrollView>
+          <Text style={styles.title}>재료</Text>
+          <Text style={styles.con}>{JSON.stringify(recipe.ingredients[0])}</Text>
+          <Text style={styles.title}>레시피</Text>
+          <Text style={styles.con}>{JSON.stringify(recipe.recipe_text[0])}</Text>
+        </ScrollView> ) : <Text>로딩 중...</Text>
+        }
       </View>
-      <FloatingHelperBtn recipe={recipe} />
+      {!isLoading ? <FloatingHelperBtn recipe={recipe}/> : null }
     </View>
   );
 }
@@ -97,6 +100,10 @@ const styles = StyleSheet.create({
   },
   ing: {
     flex: 1,
+  },
+  con: {
+    fontFamily: 'Orbit-Regular',
+    fontSize: 16,
   },
 });
 

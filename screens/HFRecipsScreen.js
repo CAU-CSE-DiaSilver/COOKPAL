@@ -11,6 +11,7 @@ import {HandControl} from'./HandFree/HandControl';//핸드 제스쳐 인식
 import {VoiceControl} from'./HandFree/VoiceControl';//쿡펠 호출
 import {VoiceCommend} from'./HandFree/VoiceCommend';//명령
 
+
 //카메라 생성
 const createFragment = viewId =>
   UIManager.dispatchViewManagerCommand(
@@ -66,7 +67,7 @@ function HFRecipeScreen({route}) {
 
     //tts 설정
     Tts.setDefaultLanguage('ko-KR');
-    Tts.setDefaultRate(0.9, true);
+    Tts.setDefaultRate(0.8 , true);
 
     // 손 인식 + 카메라 설정
     const viewId = findNodeHandle(ref.current);
@@ -123,19 +124,19 @@ function HFRecipeScreen({route}) {
               break;
             case 2 : //음성(네손가락 -> 주먹 -> 네손가락)
               if(handCon.direction==1){
-                setingredientView(true)
-              }else{
-                setingredientView(false)
-              }
-              break;
-            case 3 : //음식 재료(5 -> 주먹 -> 5)
-              if(handCon.direction==1){
                 setStepState(prev=>{
                   let page_num = prev
                   Tts.stop()
                   Tts.speak(stepContent[page_num])
                   return page_num
                 })}
+              break;  
+            case 3 : //음식 재료(5 -> 주먹 -> 5)
+              if(handCon.direction==1){
+                setingredientView(true)
+              }else{
+                setingredientView(false)
+              }
               break;
           }  
           handCon.fin = 0;
@@ -158,17 +159,11 @@ function HFRecipeScreen({route}) {
   // 보이스 컨트롤 인식
   useEffect(() => {
     // isCall이 true라면 isCall false로
-    // 일정 시간이 지나도 안불리면 자동으로 종료되기 위함
     if (isCall) {//쿡펠이 불림
       Tts.stop()
       Tts.speak("네")
+      callCookPal(false)
       voiceCom._startProcessing(getCommend)
-      //여기에 보이스 커멘드로 조정
-      const timerId = setTimeout(() => {
-        callCookPal(false)
-        getCommend("")
-      }, 5000);
-      return () => clearTimeout(timerId);
     }
   }, [isCall]);
 
@@ -179,7 +174,7 @@ function HFRecipeScreen({route}) {
           setStepState(prev=>{
             let page_num = prev
             if(stepContent.length - 1!==page_num){
-              return prev+1
+              page_num = page_num+1
             }
             return page_num
           })
@@ -187,8 +182,9 @@ function HFRecipeScreen({route}) {
         case "back" :
           setStepState(prev=>{
             let page_num = prev
+            console.log(page_num)
             if(page_num!==0){
-              return prev-1
+              page_num = page_num-1
             }
             return page_num
           })
@@ -208,60 +204,70 @@ function HFRecipeScreen({route}) {
           setingredientView(false)
           break;
       }
+      getCommend("")
     }
   }, [commend])
 
   return (
     <View style={styles.block}>
       <HFScreenHeader />
-        <GestureRecognizer
+      <GestureRecognizer
           onSwipeLeft={handleNext}
           onSwipeRight={handleBack}
           style={{
             flex: 1,
-            backgroundColor: 'lightgray',
+            backgroundColor: 'white',
             padding: 10,
-          }}>
-          
-          <Text
-          style={{
-            flex: 1,
-            backgroundColor: 'lightgray',
-            padding: 10,
-          }}>{stepContent[stepState]}</Text>
-          <View
+      }}>
+      <Image
+        style={styles.imageStyle}
+        source={{uri: stepImage[stepState]['image']}}
+      />
+      <Text
+      style={{
+        flex: 1,
+        alignSelf: 'center',
+        backgroundColor: 'white',
+        fontFamily: 'Orbit-Regular',
+        fontSize: 18,
+        padding: 20,
+      }}>{stepState + 1}/{stepContent.length}. {stepContent[stepState]}</Text>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          width: 100 ,
+          height: 100,
+          flex: 1,
+          marginTop: 20,
+          backgroundColor: 'white',
+        }}>
+        <CameraViewManager
             style={{
-              flex: 1,
-              backgroundColor: 'black',
-            }}>
-
-          <CameraViewManager
-                style={{
-                  height: PixelRatio.getPixelSizeForLayoutSize(100),
-                  width: PixelRatio.getPixelSizeForLayoutSize(100),
-                }}
-                ref={ref}
-              />
-        </View>
-        </GestureRecognizer>
-        
-        <View style={{ marginTop: 400 }}>
-          <Modal
-              animationType="slide"
-              visible={ingredientView}
-              transparent={true}
-          >
-              <View style={styles.modalView}>
-                  <View>
-                      <FlatList data = {ingredients} renderItem={renderItem}/>
-                  </View>
-                  <Pressable
-                      onPress={exitIngredient}>
-                      <Text>close</Text>
-                  </Pressable>
+              height: PixelRatio.getPixelSizeForLayoutSize(100),
+              width: PixelRatio.getPixelSizeForLayoutSize(100),
+            }}
+            ref={ref}
+          />
+      </View>   
+      <Modal
+          animationType="slide"
+          visible={ingredientView}
+          transparent={true}
+      >
+          <View style={styles.modalView}>
+              <View>
+                  <FlatList data = {ingredients} renderItem={renderItem}/>
               </View>
-          </Modal>
-      </View>
+              <Pressable
+                  onPress={exitIngredient}>
+                  <Text>close</Text>
+              </Pressable>
+          </View>
+      </Modal>
+
+      </GestureRecognizer>
     </View>
   );
 }
@@ -273,7 +279,10 @@ const styles = StyleSheet.create({
   loading: {
     alignSelf: 'center',
   },
-  imageStyle: {},
+  imageStyle: {
+    flex: 2,
+    borderRadius: 15,
+  },
   container: {
       width: '100%',
       height: '100%',

@@ -83,8 +83,8 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             var isFive = 1
             var isFour = 1
             
-            val threshold = 0.8f
-            val thumbthreshold = 0.5f
+            val threshold = 0.7f
+            val thumbthreshold = 0.3f
             var cos: Double = 0.0
 
             var a = DoubleArray(3)

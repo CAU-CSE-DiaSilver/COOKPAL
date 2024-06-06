@@ -1,19 +1,20 @@
 import {RhinoManager,RhinoErrors, RhinoInference} from '@picovoice/rhino-react-native';
 
 export class VoiceCommend {
-    getCommend;
-    
+    setCommend = null;
+    _rhinoManager = null;
     async _makeManager() {
         try {
-        this._rhinoManager = await RhinoManager.create(
-            "l4JNPFdU9yDOKlWFf4ZzOjmFkDAe5XBiEpuiRNJECtyXaA7kV4mTgQ==",
-            "VoiceModel/cookpal_ko_android_v3_0_0.rhn",
+        _rhinoManager = await RhinoManager.create(
+            "DA65/MZtTShRD/Xeg1urVJu5qw0w3OyboQtYyAxz01UWjXRrw/P7sw==",
+            "VoiceModel/CookPalComand_ko_android_v3_0_0.rhn",
             this.inferenceCallback.bind(this),
             (error) => {
             this.errorCallback(error.message);
             },
             "VoiceModel/rhino_params_ko.pv",
         );
+        console.log(this._rhinoManager)
         } catch (err) {
         let errorMessage;
         if (err instanceof RhinoErrors.RhinoInvalidArgumentError) {
@@ -35,8 +36,7 @@ export class VoiceCommend {
 
     inferenceCallback(inference) {
         if(inference.isUnderstood){
-            console.log(inference.intent)
-            this.getCommend(inference.intent)
+            setCommend(inference.intent)
         }
     }
 
@@ -45,13 +45,13 @@ export class VoiceCommend {
     }
 
     componentWillUnmount() {
-        this._rhinoManager?.delete();
+        _rhinoManager?.delete();
     }
 
     async _startProcessing(getCommend) {
-        this.getCommend = getCommend;
+        setCommend = getCommend;
         try {
-            await this._rhinoManager?.process();
+            await _rhinoManager?.process();
         } catch (e) {}
     }
 
