@@ -78,9 +78,10 @@ export class HandControl{
           this.count = 0
           this.sequence++;
         }else if((isVictory == 1 && this.flag!=1)||(isFour == 1 && this.flag != 2) || (isFive == 1 && this.flag != 3)){
+          if(this.flag == 3 && isFour == 1 && this.count<2){
+            return
+          }
           this.sequence = 0;  
-        }else if(this.flag == 3 && isFour == 1&& this.count>3){
-          this.sequence = 0;
         }
       }else {//victory/tree/five -> 주먹 -> ?
         if((this.flag==1 && isVictory == 1)||(this.flag == 2 && isFour == 1)||(isFive == 1 && this.flag == 3)){
@@ -88,6 +89,7 @@ export class HandControl{
           this.sequence = 0
           this.fin = 1
         }
+        if(this.count > 5) {this.sequence = 0}
       }//5초동안 다음 동작이 수행되지 않으면 초기화
       if(this.count>50){
         this.sequence = 0

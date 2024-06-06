@@ -49,9 +49,16 @@ function Helper({route}) {
         {!isLoading ? (
         <ScrollView>
           <Text style={styles.title}>재료</Text>
-          <Text style={styles.con}>{JSON.stringify(recipe.ingredients[0])}</Text>
+          {recipe.ingredients.map((item, index) => (
+            <Text key = {index} style={styles.con}>{item}</Text>
+          ))}
+          <Text/>
           <Text style={styles.title}>레시피</Text>
-          <Text style={styles.con}>{JSON.stringify(recipe.recipe_text[0])}</Text>
+          {recipe.recipe_text.map((item, index) => (
+            <Text key = {index} style={styles.con}>{index+1}. {item}</Text>
+          ))}
+          <Text></Text>
+          <Text></Text>
         </ScrollView> ) : <Text>로딩 중...</Text>
         }
       </View>
