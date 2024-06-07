@@ -232,7 +232,7 @@ function HFRecipeScreen({route}) {
         fontFamily: 'Orbit-Regular',
         fontSize: 18,
         padding: 20,
-      }}>{stepState + 1}/{stepContent.length}. {stepContent[stepState]}</Text>
+      }}>{"("}{stepState + 1}/{stepContent.length}{")"} {stepContent[stepState]}</Text>
       <View
         style={{
           position: 'absolute',
