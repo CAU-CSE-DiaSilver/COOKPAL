@@ -9,7 +9,7 @@ function BannerBox() {
   return (
     <ImageSlider
       data={[
-        {img: require('../android/app/src/main/assets/images/banner1.jpg')},
+        {img: require('../android/app/src/main/assets/images/배너1.jpg')},
         {img: require('../android/app/src/main/assets/images/banner1.jpg')},
         {img: require('../android/app/src/main/assets/images/banner1.jpg')},
       ]}

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 
 class Button extends Component {
   render() {
@@ -18,8 +18,12 @@ class Button extends Component {
             backgroundColor: 'lightgray',
             marginBottom: 5,
             borderRadius: 5,
-          }}
-        />
+          }}>
+          {this.props.image_url ? (<Image
+            style={styles.imageStyle}
+            source={{uri: this.props.image_url}}
+          />) : null}
+        </View>
         <Text
           style={{
             fontFamily: 'Orbit-Regular',
@@ -38,9 +42,9 @@ function CategoryBox() {
       <Text style={styles.title}>카테고리</Text>
       <View style={styles.buttonGroup}>
         <View style={styles.item}>
-          <Button name="한식" />
-          <Button name="중식" />
-          <Button name="일식" />
+          <Button name="한식" image_url="../android/app/main/assets/images/한식.png"/>
+          <Button name="중식" image_url="../android/app/main/assets/images/중식.png"/>
+          <Button name="일식" image_url="../android/app/main/assets/images/일식.png"/>
         </View>
         <View style={styles.item}>
           <Button name="양식" />
